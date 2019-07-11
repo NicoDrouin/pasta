@@ -1,0 +1,7 @@
+# back
+
+/.vscode
+.gunicorn.service
+.db.sqlite3
+**/dna_files/**
+**/migrations
