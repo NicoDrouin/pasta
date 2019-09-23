@@ -1,10 +1,10 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { Fragment } from 'react'
+import { NavLink } from 'react-router-dom'
 
 
 const Header = ({ onLogout }) => {
   return (
-    <React.Fragment>
+    <Fragment>
       {
         localStorage.getItem('loggedUserUsername')
         ?
@@ -26,7 +26,11 @@ const Header = ({ onLogout }) => {
             }
 
             <div className='side'>
-              <div className='username'><NavLink to={'/user/edit/' + localStorage.getItem('loggedUserId') + '/'}>{localStorage.getItem('loggedUserUsername')}</NavLink></div>
+              <div className='username'>
+                <NavLink to={'/user/edit/' + localStorage.getItem('loggedUserId') + '/'}>
+                  {localStorage.getItem('loggedUserUsername')}
+                </NavLink>
+              </div>
               <div><NavLink to='/login/' onClick={onLogout}>logout</NavLink></div>
             </div>
           </section>
@@ -35,8 +39,8 @@ const Header = ({ onLogout }) => {
             <div><NavLink to='/login/'>login</NavLink></div>
           </section>
       }
-    </React.Fragment>
-  );
+    </Fragment>
+  )
 }
- 
-export default Header;
+
+export default Header

@@ -1,33 +1,32 @@
-import React, { Component } from 'react';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import axios from 'axios';
-import { getTokenCookie } from './services/tokenCookie';
-import urlApi from './services/httpService';
+import React, {  useState, useEffect, Fragment  } from 'react'
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
+import axios from 'axios'
+import { getTokenCookie } from './services/tokenCookie'
+import urlApi from './services/httpService'
 
-import Header from './components/Header';
-import Footer from './components/Footer';
-import LoginForm from './components/LoginForm';
+import Header from './components/Header'
+import Footer from './components/Footer'
+import LoginForm from './components/LoginForm'
 
-import UserCreate from './components/user/UserCreate';
-import UserList from './components/user/UserList';
-import UserDetail from './components/user/UserDetail';
-import UserEdit from './components/user/UserEdit';
+import UserCreate from './components/user/UserCreate'
+import UserList from './components/user/UserList'
+import UserDetail from './components/user/UserDetail'
+import UserEdit from './components/user/UserEdit'
 
-import ParentsCreate from './components/parents/ParentsCreate';
-import ParentsEdit from './components/parents/ParentsEdit';
-import ParentsDetail from './components/parents/ParentsDetail';
-import ParentsList from './components/parents/ParentsList';
-import ParentsForUserList from './components/parents/ParentsForUserList';
+import ParentsCreate from './components/parents/ParentsCreate'
+import ParentsEdit from './components/parents/ParentsEdit'
+import ParentsDetail from './components/parents/ParentsDetail'
+import ParentsList from './components/parents/ParentsList'
+import ParentsForUserList from './components/parents/ParentsForUserList'
 
-import ReportsContainer from './components/reports/ReportsContainer';
+import ReportsContainer from './components/reports/ReportsContainer'
 
-import NotFound from './components/NotFound';
+import NotFound from './components/NotFound'
 
 
-class App extends Component {
-  state = {
-      headerUpdater: 1,
-  };
+const App = () => {
+
+  const [headerUpdater, setHeaderUpdater] = useState(1)
 
   // ====================
   // LocalStorage used:
@@ -37,78 +36,75 @@ class App extends Component {
   // # loggedUserIsStaff
   // ====================
 
-  componentDidMount() {
-    // if token cookie do not exist then clear the localStorage and update the Header component;
+  useEffect(() => {
+    // if token cookie do not exist then clear the localStorage and update the Header component
     if (getTokenCookie('token') === '') {
-      localStorage.clear();
-      const headerUpdater = this.state.headerUpdater + 1;
-      this.setState({ headerUpdater })
+      localStorage.clear()
+      setHeaderUpdater(headerUpdater + 1)
     }
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [] )
 
-  onLogout = () => {
+  function onLogout() {
     console.log('onLogout')
     axios.post(urlApi + 'rest-auth/logout/')
       .then((response) => {
-          console.log('Logout response : ', response);
-          localStorage.clear();
-          document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;';
-          const headerUpdater = this.state.headerUpdater + 1;
-          this.setState({ headerUpdater })
+          console.log('Logout response : ', response)
+          localStorage.clear()
+          document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;'
+          setHeaderUpdater(headerUpdater + 1)
       })
       .catch((error) => {
           if (error.response !== undefined) {
-              console.log('Logout error: ', error.response);
+              console.log('Logout error: ', error.response)
           }
-      });
+      })
   }
 
 
-  render() {
-    return (
-      <React.Fragment>
+  return (
+    <Fragment>
 
-        <Header onLogout={this.onLogout} headerUpdater={this.headerUpdater} />
+      <Header onLogout={onLogout} headerUpdater={headerUpdater} />
 
-        <Switch>
-          <Route path='/login' component={LoginForm} />
+      <Switch>
+        <Route path='/login' component={LoginForm} />
 
-          {/* ============
-              ### User ###
-              ============ */}
-          <Route path='/user/create' component={UserCreate} />
-          <Route path='/user/edit/' exact component={UserEdit} />
-          <Route path='/user/edit/:id' component={UserEdit} />
-          <Route path='/user/:id' component={UserDetail} />
-          <Route path='/user' component={UserList} />
-
-
-          {/* ===============
-              ### Parents ###
-              =============== */}
-          <Route path='/parents/create' component={ParentsCreate} />
-          <Route path='/parents/edit/:id' component={ParentsEdit} />
-          <Route path='/parents/detail/:id'component={ParentsDetail} />
-          <Route path='/parents/all'component={ParentsList} />
-          <Route path='/parents/:id' component={ParentsForUserList} />
+        {/* ============
+            ### User ###
+            ============ */}
+        <Route path='/user/create' component={UserCreate} />
+        <Route path='/user/edit/' exact component={UserEdit} />
+        <Route path='/user/edit/:id' component={UserEdit} />
+        <Route path='/user/:id' component={UserDetail} />
+        <Route path='/user' component={UserList} />
 
 
-          {/* ==============
-              ### Report ###
-              ============== */}
-          <Route path='/report/:private_url' component={ReportsContainer} />
+        {/* ===============
+            ### Parents ###
+            =============== */}
+        <Route path='/parents/create' component={ParentsCreate} />
+        <Route path='/parents/edit/:id' component={ParentsEdit} />
+        <Route path='/parents/detail/:id'component={ParentsDetail} />
+        <Route path='/parents/all'component={ParentsList} />
+        <Route path='/parents/:id' component={ParentsForUserList} />
 
 
-          <Route path='/404' component={NotFound} />
-          <Redirect from='' to='/login' />
-          <Redirect to='/404' />
-        </Switch>
+        {/* ==============
+            ### Report ###
+            ============== */}
+        <Route path='/report/:private_url' component={ReportsContainer} />
 
-        <Footer />
 
-      </React.Fragment>
-    );
-  }
+        <Route path='/404' component={NotFound} />
+        <Redirect from='' to='/login' />
+        <Redirect to='/404' />
+      </Switch>
+
+      <Footer />
+
+    </Fragment>
+  )
 }
 
-export default withRouter(App);
+export default withRouter(App)

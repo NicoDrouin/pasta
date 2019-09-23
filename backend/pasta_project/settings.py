@@ -14,7 +14,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
 if DEBUG:
@@ -186,7 +186,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
     # https://www.django-rest-framework.org/api-guide/pagination/#html-pagination-controls
@@ -232,19 +232,19 @@ MEDIA_URL = '/media/'
 
 # https://docs.djangoproject.com/en/2.1/ref/settings/#media-root
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
-DEFAULT_FROM_EMAIL = 'pasta <noreply@pasta.com>'
+# DEFAULT_FROM_EMAIL = 'pasta <noreply@pasta.com>'
 
-ADMINS = [('nico', 'ballonposte@gmail.com')]
+# ADMINS = [('nico', 'ballonposte@gmail.com')]
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-SERVER_EMAIL = 'noreply@pasta.com'
+# SERVER_EMAIL = 'noreply@pasta.com'
 
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.sendgrid.net'
+# EMAIL_HOST_USER = 'apikey'
+# EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True

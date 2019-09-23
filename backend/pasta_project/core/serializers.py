@@ -17,10 +17,10 @@ from pasta_project.core.email import welcome_email
 class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
-        # email = validated_data['email']
-        # username = validated_data['username']
-        # password = validated_data.pop('password', None)
-        # instance = self.Meta.model(**validated_data)
+        email = validated_data['email']
+        username = validated_data['username']
+        password = validated_data.pop('password', None)
+        instance = self.Meta.model(**validated_data)
         if password is not None:
             # welcome_email(email, username, password)
             instance.set_password(password)
