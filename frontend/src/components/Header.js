@@ -1,16 +1,37 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useContext } from 'react'
 import { NavLink } from 'react-router-dom'
+import { LoginContext } from '../contexts/LoginContext'
+import axios from 'axios'
+import urlApi from '../services/httpService'
 
 
-const Header = ({ onLogout }) => {
+const Header = () => {
+
+  const { setLogin, login } = useContext(LoginContext)
+
+  function onLogout() {
+    console.log('onLogout')
+    axios.post(urlApi + 'rest-auth/logout/')
+      .then((response) => {
+          console.log('Logout response : ', response)
+          document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;'
+          setLogin({loggedUserUsername: '', loggedUserId: '', loggedUserIsStaff: false})
+      })
+      .catch((error) => {
+          if (error.response !== undefined) {
+              console.log('Logout error: ', error.response)
+          }
+      })
+  }
+
   return (
     <Fragment>
       {
-        localStorage.getItem('loggedUserUsername')
+        login.loggedUserUsername
         ?
           <section id='navbar'>
             {
-              localStorage.getItem('loggedUserIsStaff') === 'true'
+              login.loggedUserIsStaff === true
               ?
                 <div className='side'>
                   <div><NavLink exact to='/user/'>All users</NavLink></div>
@@ -27,8 +48,8 @@ const Header = ({ onLogout }) => {
 
             <div className='side'>
               <div className='username'>
-                <NavLink to={'/user/edit/' + localStorage.getItem('loggedUserId') + '/'}>
-                  {localStorage.getItem('loggedUserUsername')}
+                <NavLink to={'/user/edit/' + login.loggedUserId + '/'}>
+                  {login.loggedUserUsername}
                 </NavLink>
               </div>
               <div><NavLink to='/login/' onClick={onLogout}>logout</NavLink></div>

@@ -1,8 +1,10 @@
-import React, {  useState, useEffect, Fragment  } from 'react'
+// import React, { useState, useEffect, Fragment } from 'react'
+import React, { Fragment } from 'react'
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
-import axios from 'axios'
-import { getTokenCookie } from './services/tokenCookie'
-import urlApi from './services/httpService'
+// import axios from 'axios'
+// import { getTokenCookie } from './services/tokenCookie'
+// import urlApi from './services/httpService'
+import LoginContextProvider from './contexts/LoginContext'
 
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -26,80 +28,45 @@ import NotFound from './components/NotFound'
 
 const App = () => {
 
-  const [headerUpdater, setHeaderUpdater] = useState(1)
-
-  // ====================
-  // LocalStorage used:
-  // ====================
-  // # loggedUserUsername
-  // # loggedUserId
-  // # loggedUserIsStaff
-  // ====================
-
-  useEffect(() => {
-    // if token cookie do not exist then clear the localStorage and update the Header component
-    if (getTokenCookie('token') === '') {
-      localStorage.clear()
-      setHeaderUpdater(headerUpdater + 1)
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [] )
-
-  function onLogout() {
-    console.log('onLogout')
-    axios.post(urlApi + 'rest-auth/logout/')
-      .then((response) => {
-          console.log('Logout response : ', response)
-          localStorage.clear()
-          document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;'
-          setHeaderUpdater(headerUpdater + 1)
-      })
-      .catch((error) => {
-          if (error.response !== undefined) {
-              console.log('Logout error: ', error.response)
-          }
-      })
-  }
-
-
   return (
     <Fragment>
 
-      <Header onLogout={onLogout} headerUpdater={headerUpdater} />
+      <LoginContextProvider>
+        <Header />
 
-      <Switch>
-        <Route path='/login' component={LoginForm} />
+        <Switch>
+            <Route path='/login' component={LoginForm} />
 
-        {/* ============
-            ### User ###
-            ============ */}
-        <Route path='/user/create' component={UserCreate} />
-        <Route path='/user/edit/' exact component={UserEdit} />
-        <Route path='/user/edit/:id' component={UserEdit} />
-        <Route path='/user/:id' component={UserDetail} />
-        <Route path='/user' component={UserList} />
-
-
-        {/* ===============
-            ### Parents ###
-            =============== */}
-        <Route path='/parents/create' component={ParentsCreate} />
-        <Route path='/parents/edit/:id' component={ParentsEdit} />
-        <Route path='/parents/detail/:id'component={ParentsDetail} />
-        <Route path='/parents/all'component={ParentsList} />
-        <Route path='/parents/:id' component={ParentsForUserList} />
+            {/* ============
+                ### User ###
+                ============ */}
+            <Route path='/user/create' component={UserCreate} />
+            <Route path='/user/edit/' exact component={UserEdit} />
+            <Route path='/user/edit/:id' component={UserEdit} />
+            <Route path='/user/:id' component={UserDetail} />
+            <Route path='/user' component={UserList} />
 
 
-        {/* ==============
-            ### Report ###
-            ============== */}
-        <Route path='/report/:private_url' component={ReportsContainer} />
+            {/* ===============
+                ### Parents ###
+                =============== */}
+            <Route path='/parents/create' component={ParentsCreate} />
+            <Route path='/parents/edit/:id' component={ParentsEdit} />
+            <Route path='/parents/detail/:id'component={ParentsDetail} />
+            <Route path='/parents/all'component={ParentsList} />
+            <Route path='/parents/:id' component={ParentsForUserList} />
+
+            {/* ==============
+                ### Report ###
+                ============== */}
+            <Route path='/report/:private_url' component={ReportsContainer} />
 
 
-        <Route path='/404' component={NotFound} />
-        <Redirect from='' to='/login' />
-        <Redirect to='/404' />
-      </Switch>
+            <Route path='/404' component={NotFound} />
+            <Redirect from='' to='/login' />
+            <Redirect to='/404' />
+        </Switch>
+      </LoginContextProvider>
 
       <Footer />
 

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
+import { LoginContext } from '../../contexts/LoginContext'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import { getTokenCookie } from '../../services/tokenCookie'
@@ -8,6 +9,8 @@ import DnaFilesLists from '../dnaFiles/DnaFilesLists'
 
 
 const ParentsDetail = props => {
+
+    const { login } = useContext(LoginContext)
 
     const [parent, setParent] = useState({})
     const [popIsClose, setPopIsClose] = useState(true)
@@ -21,7 +24,7 @@ const ParentsDetail = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [] )
 
-    function  getParentsDetails(parentsId) {
+    function getParentsDetails(parentsId) {
         axios.get(urlApi + 'parents/detail/' + parentsId + '/')
             .then(response => {
                 console.log('getParentsDetails: /parents/id/', response)
@@ -88,7 +91,7 @@ const ParentsDetail = props => {
                 <section className='body'>
                     {parentsNames}
                     {
-                        localStorage.getItem('loggedUserIsStaff') === true
+                        login.loggedUserIsStaff === true
                         &&
                         <p><Link to={'../../../parents/' + parent.user_id + '/'} className='btn btn-primary'>
                             PARENTS LIST FOR <span className='uppercase'>{userTitleFirstLastName}</span>

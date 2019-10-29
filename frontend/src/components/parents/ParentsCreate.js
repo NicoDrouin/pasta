@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
+import { LoginContext } from '../../contexts/LoginContext'
 import axios from 'axios'
 import { getTokenCookie } from '../../services/tokenCookie'
 import { Link } from 'react-router-dom'
@@ -6,6 +7,8 @@ import urlApi from '../../services/httpService'
 
 
 const ParentsCreate = props => {
+
+    const { login } = useContext(LoginContext)
 
     const [users, setUsers] = useState([])
     const [values, setValues] = useState('')
@@ -15,10 +18,10 @@ const ParentsCreate = props => {
         axios.defaults.headers.common['Authorization'] = 'Token ' + getTokenCookie()
         axios.get(urlApi + 'user/')
             .then(response => {
-                if (localStorage.getItem('loggedUserIsStaff') === 'true') {
+                if (login.loggedUserIsStaff === true) {
                     setUsers( response.data )
                 }
-                else if (localStorage.getItem('loggedUserIsStaff') !== 'true') {
+                else if (login.loggedUserIsStaff !== true) {
                     setUsers( response.data[0].id )
                 }
                 console.log('ParentsCreate', response.data)
@@ -91,7 +94,7 @@ const ParentsCreate = props => {
                 <section className='body'>
                     <form onSubmit={e => handleCreate(e)}>
                             {
-                                localStorage.getItem('loggedUserIsStaff') === 'true'
+                                login.loggedUserIsStaff === true
                                 ?
                                     <p>
                                         <label htmlFor='userId'>User:</label>

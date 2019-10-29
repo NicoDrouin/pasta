@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
+import { LoginContext } from '../../contexts/LoginContext'
 import axios from 'axios'
 import { getTokenCookie } from '../../services/tokenCookie'
 import { Link } from 'react-router-dom'
@@ -6,6 +7,9 @@ import urlApi from '../../services/httpService'
 
 
 const ParentsEdit = props => {
+
+    const { login } = useContext(LoginContext)
+
     const [values, setValues] = useState('')
     const [valuesError, setValuesError] = useState('')
     const [userId] = useState(props.match.params.id)
@@ -47,7 +51,7 @@ const ParentsEdit = props => {
             father_last_name: values.fatherLastName,
         })
             .then((response) => {
-                localStorage.getItem('loggedUserIsStaff') === true
+                login.loggedUserIsStaff === true
                 ?
                     props.history.push('/parents/' + userId + '/')
                 :

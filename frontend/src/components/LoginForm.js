@@ -1,12 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import axios from 'axios'
 import { setTokenCookie } from '../services/tokenCookie'
+import { LoginContext } from '../contexts/LoginContext'
 import urlApi from '../services/httpService'
 import PropTypes from 'prop-types'
 
 
 const LoginForm = props => {
-    
+
+    const { login, setLogin } = useContext(LoginContext)
+
     const [values, setValues] = useState({})
     const [valuesError, setValuesError] = useState({})
 
@@ -33,7 +36,9 @@ const LoginForm = props => {
                     let errorMessage
                     for (errorMessage in error.response.data) {
                         // eslint-disable-next-line no-loop-func
-                        setValuesError(valuesError => ({ ...valuesError, [errorMessage]: error.response.data[errorMessage][0] }))
+                        setValuesError(valuesError =>
+                            ({ ...valuesError, [errorMessage]: error.response.data[errorMessage][0] })
+                        )
                     }
                 }
             })
@@ -44,22 +49,21 @@ const LoginForm = props => {
         axios.get(urlApi + 'rest-auth/user/')
         .then(response => {
             setTokenCookie(token)
-            localStorage.setItem('loggedUserUsername', response.data.username)
-            localStorage.setItem('loggedUserId', response.data.pk)
-            checkIfIsStaff(response.data.pk)
+            checkIfIsStaff(response.data.username, response.data.pk)
         })
         .catch(error => {
             console.log('Login error: ', error.response)
         })
     }
 
-    function checkIfIsStaff(userId) {
-        axios.get(urlApi + 'user/' + userId)
+    function checkIfIsStaff(loggedUserUsername, loggedUserId) {
+        axios.get(urlApi + 'user/' + loggedUserId)
             .then(response => {
-                localStorage.setItem('loggedUserIsStaff', response.data.is_staff)
                 if (response.data.is_staff) {
+                    setLogin({loggedUserUsername: loggedUserUsername, loggedUserId: loggedUserId, loggedUserIsStaff: true})
                     props.history.push('/user/')
                 } else {
+                    setLogin({loggedUserUsername: loggedUserUsername, loggedUserId: loggedUserId, loggedUserIsStaff: false})
                     props.history.push('/parents/all/')
                 }
             })
